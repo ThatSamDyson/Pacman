@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), _cPacmanFrameTime(250), _cMunchieFrameTime(500)
+Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), _cPacmanFrameTime(250), _cMunchieFrameTime(500), _cAppleFrameTime(500)
 
 {
 
@@ -58,6 +58,14 @@ void Pacman::LoadContent()
 		// Set string position
 		_stringPosition = new Vector2(10.0f, 25.0f);
 
+		_appleBlueTexture = new Texture2D();
+		_appleBlueTexture->Load("Textures/AppleBlue.png", true);
+		_appleRedTexture = new Texture2D();
+		_appleRedTexture->Load("Textures/AppleRed.png", true);
+		_appleRect = new Rect(200.0f, 0.0f, 12, 12);
+		_munchieCurrentFrameTime = 0;
+		
+
 }
 
 void Pacman::Update(int elapsedTime)
@@ -95,29 +103,33 @@ void Pacman::Input(int elapsedTime)
 		// Checks if D key is pressed
 		if (keyboardState->IsKeyDown(Input::Keys::D))
 			_pacmanPosition->X += 0.1f * elapsedTime; //Moves Pacman across X axis
-			
-		// Checks if A key is pressed
-		if (keyboardState->IsKeyDown(Input::Keys::A))
-		{
-			_pacmanPosition->X += -0.1f * elapsedTime; //Moves Pacman across X axis
-			_pacmanDirection = 2;
 
-		}
-		// Checks if S key is pressed
-		if (keyboardState->IsKeyDown(Input::Keys::S))
+		else
 		{
-			_pacmanPosition->Y += 0.1f * elapsedTime; //Moves Pacman across Y axis
-			_pacmanDirection = 1;
-		}
 
-		// Checks if W key is pressed
-		if (keyboardState->IsKeyDown(Input::Keys::W))
-		{
-			_pacmanPosition->Y += -0.1f * elapsedTime; //Moves Pacman across Y axis
-			_pacmanDirection = 3;
+			// Checks if S key is pressed
+			if (keyboardState->IsKeyDown(Input::Keys::S))
+			{
+				_pacmanPosition->Y += 0.1f * elapsedTime; //Moves Pacman across Y axis
+				_pacmanDirection = 1;
+			}
+
+			if (keyboardState->IsKeyDown(Input::Keys::W))
+			{
+				_pacmanPosition->Y += -0.1f * elapsedTime; //Moves Pacman across Y axis
+				_pacmanDirection = 3;
+			}
+
+			if (keyboardState->IsKeyDown(Input::Keys::A))
+			{
+				_pacmanPosition->X += -0.1f * elapsedTime; //Moves Pacman across X axis
+				_pacmanDirection = 2;
+			}
+
 		}
 		
 	}
+
 	
 }
 
@@ -157,6 +169,36 @@ void Pacman::Draw(int elapsedTime)
 		// Draw Blue Munchie
 		SpriteBatch::Draw(_munchieBlueTexture, _munchieRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 		
+		_frameCount++;
+
+		if (_frameCount >= 60)
+			_frameCount = 0;
+	}
+
+	//Apple
+	if (_frameCount == 0)
+	{
+		// Draws Red Apple
+		SpriteBatch::Draw(_appleRedTexture, _appleRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+
+		_appleCurrentFrameTime += elapsedTime;
+
+		if (_appleCurrentFrameTime > _cAppleFrameTime)
+		{
+			_frameCount++;
+
+			if (_frameCount >= 2)
+				_frameCount = 0;
+
+			_appleCurrentFrameTime = 0;
+
+		}
+	}
+	else
+	{
+		// Draw Blue Munchie
+		SpriteBatch::Draw(_appleBlueTexture, _appleRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+
 		_frameCount++;
 
 		if (_frameCount >= 60)

@@ -69,6 +69,15 @@ private:
 	Texture2D* _munchieBlueTexture;
 	Texture2D* _munchieInvertedTexture;
 
+	//Data for Apple
+	int _appleframeCount;
+	int _appleFrame;
+	int _appleCurrentFrameTime;
+	const int _cAppleFrameTime;
+	Rect* _appleRect;
+	Texture2D* _appleBlueTexture;
+	Texture2D* _appleRedTexture;
+
 
 	// Position for String
 	Vector2* _stringPosition;
